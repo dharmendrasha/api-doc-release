@@ -1,0 +1,2954 @@
+openapi: 3.0.0
+paths:
+  /api/v1/user/register:
+    post:
+      operationId: UsersController_register
+      summary: Register a new user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterDto'
+      responses:
+        '201':
+          description: User successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreatedResponse'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Module
+  /api/v1/user/login:
+    post:
+      operationId: UsersController_login
+      summary: Login user to get access of system
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginDto'
+      responses:
+        '200':
+          description: Successfully logged-in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponseDto'
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Module
+  /api/v1/user/forget-password:
+    post:
+      operationId: UsersController_forgetPassword
+      summary: For forget password
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgetPasswordReqDto'
+      responses:
+        '201':
+          description: Successfully email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgotPasswordResDto'
+        '404':
+          description: Email Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Module
+  /api/v1/user/{id}:
+    get:
+      operationId: UsersController_getUserDataByUserId
+      summary: Get Users data
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: id of the user
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersDataDto'
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Module
+  /api/v1/plugins:
+    get:
+      operationId: PluginsController_findAll
+      summary: To get list of plugin
+      parameters:
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema:
+            default: 1
+            type: number
+        - name: recordPerPage
+          required: false
+          in: query
+          example: 10
+          schema:
+            default: 10
+            type: number
+        - name: order
+          required: false
+          in: query
+          example: desc
+          schema:
+            default: desc
+            enum:
+              - desc
+              - asc
+            type: string
+        - name: key
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: value
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginListResponseDto'
+        '401':
+          description: Login required to get plugin list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Plugin Module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: PluginsController_store
+      summary: Add plugin
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PluginReqDTO'
+      responses:
+        '201':
+          description: Plugin successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginResponseDto'
+        '401':
+          description: Login required to store an plugin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Plugin Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/plugins/{id}:
+    get:
+      operationId: PluginsController_findById
+      summary: To get  plugin by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the plugin
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginResponseDto'
+        '401':
+          description: Login required to get plugin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Plugin Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Plugin Module
+      security:
+        - api-key: []
+        - bearer: []
+    put:
+      operationId: PluginsController_update
+      summary: Update plugin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the plugin to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PluginUpdateReqDto'
+      responses:
+        '200':
+          description: Plugin updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginResponseDto'
+        '401':
+          description: login required to update plugin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Plugin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Plugin Module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: PluginsController_delete
+      summary: Delete plugin by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the plugin to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Resource deleted successfully
+        '401':
+          description: Login required to delete an plugin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Plugin Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Plugin Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/api-key:
+    get:
+      operationId: APIKeyController_find
+      summary: Get available APIKey List
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyListResponseDto'
+        '401':
+          description: log-in required to get api-keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: No API keys found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - APIKey Module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: APIKeyController_store
+      summary: Add APIKey
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIKeyReqDto'
+      responses:
+        '201':
+          description: APIKey successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyResponseDto'
+        '401':
+          description: Login required for create an apikey
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - APIKey Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/api-key/{id}:
+    get:
+      operationId: APIKeyController_findById
+      summary: To get APIKey by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the APIKey
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyResponseDto'
+        '401':
+          description: Login required to get APIKey
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - APIKey Module
+      security:
+        - api-key: []
+        - bearer: []
+    put:
+      operationId: APIKeyController_update
+      summary: Update APIKey
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the ApiKey to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIKeyUpdateDto'
+      responses:
+        '200':
+          description: APIKey updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyResponseDto'
+        '401':
+          description: Login required to update API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: APIKey not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - APIKey Module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: APIKeyController_delete
+      summary: Delete apiKey by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the apikey to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: APIKey deleted successfully
+        '401':
+          description: Login required to delete API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: APIKey Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - APIKey Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/requests:
+    get:
+      operationId: RequestController_findAll
+      summary: Get all requests
+      parameters:
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema:
+            default: 1
+            type: number
+        - name: recordPerPage
+          required: false
+          in: query
+          example: 10
+          schema:
+            default: 10
+            type: number
+        - name: order
+          required: false
+          in: query
+          example: desc
+          schema:
+            default: desc
+            enum:
+              - desc
+              - asc
+            type: string
+        - name: key
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: value
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestListResponseDto'
+        '401':
+          description: Login required to get request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Request Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Request Module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: RequestController_store
+      summary: Store request
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestDto'
+      responses:
+        '201':
+          description: Request  successfully stored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestResponseDto'
+        '401':
+          description: Login required to store an request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: ' validation errors'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Request Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/requests/{id}:
+    get:
+      operationId: RequestController_findOne
+      summary: Get request by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the request
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestResponseDto'
+        '401':
+          description: Login required to get request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Request Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Request Module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: RequestController_delete
+      summary: Delete request by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the request to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Resource deleted successfully
+        '401':
+          description: Login required to delete an request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Request Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Request Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/analytics:
+    get:
+      operationId: AnalyticsController_getRequestAnalyticsData
+      summary: ''
+      description: To get request analytics
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsResponseDto'
+        '401':
+          description: Log in required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Request Dashboard Analytics
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/request/sse/{id}:
+    get:
+      operationId: RequestSseController_findOne
+      summary: Get request by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the request
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestResponseDto'
+        '401':
+          description: Login required to get request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Request Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - User Request SSE Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/feedback:
+    get:
+      operationId: FeedbackController_findAll
+      summary: Get available feedbacks List
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackListResponseDto'
+        '401':
+          description: log-in required to get feedbacks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: No feedbacks found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - feedback module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: FeedbackController_store
+      summary: Add feedbacks
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackReqDto'
+      responses:
+        '201':
+          description: Feedback successfully stored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponseDto'
+        '401':
+          description: Login required for upload an feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - feedback module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/feedback/{id}:
+    get:
+      operationId: FeedbackController_findById
+      summary: To get feedback by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the feedback
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponseDto'
+        '401':
+          description: Login required to get feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Feedback Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - feedback module
+      security:
+        - api-key: []
+        - bearer: []
+    put:
+      operationId: FeedbackController_update
+      summary: Update Feedback
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the feedback to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackUpdateReqDto'
+      responses:
+        '200':
+          description: Feedback updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponseDto'
+        '401':
+          description: Login required to update feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - feedback module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: FeedbackController_delete
+      summary: Delete feedback by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the feedback to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Feedback deleted successfully
+        '401':
+          description: Login required to delete feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Feedback Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - feedback module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/oauth/{provider}/login:
+    get:
+      operationId: AuthController_githubAuth
+      summary: For login or signup
+      parameters:
+        - name: redirect_url
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: provider
+          required: true
+          in: path
+          description: Provider for auth
+          schema:
+            enum:
+              - google
+              - facebook
+              - github
+            type: string
+      responses:
+        '422':
+          description: 'Unprocessable Entity or Validation Error : Provider missing'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Social sign up module
+  /api/v1/oauth/{provider}/callback:
+    get:
+      operationId: AuthController_AuthCallback
+      parameters:
+        - name: code
+          required: true
+          in: query
+          description: code for auth
+          schema:
+            type: string
+        - name: state
+          required: true
+          in: query
+          description: state to verify auth user
+          schema:
+            type: string
+        - name: provider
+          required: true
+          in: path
+          description: Provider for auth
+          schema:
+            enum:
+              - google
+              - facebook
+              - github
+            type: string
+      responses:
+        '422':
+          description: >-
+            Unprocessable Entity or Validation Error : Missing provider Or code
+            Or state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Social sign up module
+  /api/v1/oauth/verify:
+    get:
+      operationId: AuthController_verifyToken
+      summary: For verify state
+      parameters:
+        - name: state
+          required: true
+          in: query
+          description: state to verify auth user
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponseDto'
+        '404':
+          description: 'Invalid state: User not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: 'Unprocessable Entity or Validation Error : Missing State'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Social sign up module
+  /api/v1/oauth/provider:
+    get:
+      operationId: AuthController_availableProviderList
+      summary: List of available provider
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderList'
+      tags:
+        - Social sign up module
+  /api/v1/pricing/transacations/user/{id}:
+    get:
+      operationId: PricingController_getUsersTransactionsListOfUsedSeconds
+      summary: Get users used seconds transacations by user id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema:
+            default: 1
+            type: number
+        - name: recordPerPage
+          required: false
+          in: query
+          example: 10
+          schema:
+            default: 10
+            type: number
+        - name: order
+          required: false
+          in: query
+          example: desc
+          schema:
+            default: desc
+            enum:
+              - desc
+              - asc
+            type: string
+        - name: key
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: value
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsResponseDtoList'
+        '401':
+          description: log-in required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Pricing Module
+      security:
+        - api-key: []
+  /api/v1/application:
+    get:
+      operationId: ApplicationController_findAll
+      summary: Get All Apps
+      parameters:
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema:
+            default: 1
+            type: number
+        - name: recordPerPage
+          required: false
+          in: query
+          example: 10
+          schema:
+            default: 10
+            type: number
+        - name: order
+          required: false
+          in: query
+          example: desc
+          schema:
+            default: desc
+            enum:
+              - desc
+              - asc
+            type: string
+        - name: key
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: value
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppListResponseDto'
+        '401':
+          description: 'Log in required '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Application module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: ApplicationController_create
+      summary: Create App
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequestDto'
+      responses:
+        '200':
+          description: App created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResDto'
+        '401':
+          description: 'Log in required '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: 'Unprocessable Entity: Validation Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Application module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/application/{id}:
+    get:
+      operationId: ApplicationController_find
+      summary: Get App by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseDto'
+        '401':
+          description: 'Log in required '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: App Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Application module
+      security:
+        - api-key: []
+        - bearer: []
+    put:
+      operationId: ApplicationController_update
+      summary: Update App by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateAppRequestDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseDto'
+        '401':
+          description: 'Log in required '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: App Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Application module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: ApplicationController_delete
+      summary: Delete App by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '401':
+          description: 'Log in required '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: App Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Application module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/sequence:
+    get:
+      operationId: SequenceController_findAll
+      summary: Get all sequences
+      parameters:
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema:
+            default: 1
+            type: number
+        - name: recordPerPage
+          required: false
+          in: query
+          example: 10
+          schema:
+            default: 10
+            type: number
+        - name: order
+          required: false
+          in: query
+          example: desc
+          schema:
+            default: desc
+            enum:
+              - desc
+              - asc
+            type: string
+        - name: key
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: value
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceListResponseDto'
+        '401':
+          description: Login required to get sequences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence Module
+      security:
+        - api-key: []
+        - bearer: []
+    post:
+      operationId: SequenceController_store
+      summary: Store sequence
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSequenceDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceResponseDto'
+        '401':
+          description: Login required to store an sequence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: App not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/sequence/{id}:
+    get:
+      operationId: SequenceController_findOne
+      summary: Get sequence by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the sequence
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceResponseDto'
+        '401':
+          description: Login required to get sequence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Sequence Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence Module
+      security:
+        - api-key: []
+        - bearer: []
+    put:
+      operationId: SequenceController_update
+      summary: Update sequence
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the sequence to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSequenceDto'
+      responses:
+        '200':
+          description: Sequence updated successfully
+        '401':
+          description: Login required to update sequence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Sequence  not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence Module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: SequenceController_delete
+      summary: Delete sequence by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: ID of the sequence to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Resource deleted successfully
+        '401':
+          description: Login required to delete an sequence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Sequence Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/sequence-output:
+    post:
+      operationId: SequenceOutputController_store
+      summary: To store sequence-output
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SequenceOutputReqDTO'
+      responses:
+        '201':
+          description: Successfully store sequence_output
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceOutputResponseDTO'
+        '401':
+          description: Add api-key for authorize
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Sequence not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence-output
+      security:
+        - api-key: []
+  /api/v1/sequence-output/{sequence_output_id}:
+    get:
+      operationId: SequenceOutputController_getSequenceOutput
+      summary: To get sequence-output by id
+      parameters:
+        - name: sequence_output_id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully get sequence_output
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceOutputResponseDTO'
+        '401':
+          description: Add api-key for authorize
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: Sequence_output not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Sequence-output
+      security:
+        - api-key: []
+  /api/v1/profile:
+    get:
+      operationId: ProfileController_getProfile
+      summary: Get profile
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResDto'
+        '401':
+          description: Login required to get profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+    delete:
+      operationId: ProfileController_delete
+      summary: Delete profile
+      parameters:
+        - name: otp
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Profile deleted successfully
+        '401':
+          description: Login required to delete profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/profile/update-name:
+    put:
+      operationId: ProfileController_updateName
+      summary: Update Name
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NameUpdateReqDto'
+      responses:
+        '200':
+          description: Name updated successfully
+        '401':
+          description: login required to update name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/profile/update-email:
+    put:
+      operationId: ProfileController_updateEmail
+      summary: Update email
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailUpdateReqDto'
+      responses:
+        '200':
+          description: Email updated successfully
+        '401':
+          description: login required to update email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/profile/update-password:
+    put:
+      operationId: ProfileController_updatePassword
+      summary: Update password
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordUpdateReqDto'
+      responses:
+        '200':
+          description: Password updated successfully
+        '401':
+          description: login required to update password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '422':
+          description: Unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+  /api/v1/profile/send-otp:
+    post:
+      operationId: ProfileController_sendOtp
+      summary: send otp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GRecapthcaVerify'
+      responses:
+        '200':
+          description: otp sent successfully
+        '401':
+          description: login required to update password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionDto'
+      tags:
+        - Profile Module
+      security:
+        - api-key: []
+        - bearer: []
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+info:
+  title: Crawlora
+  description: |-
+    API Documentation         
+     NOTE: The API with (LOCK) symbol can be used only after providing Login API response token in (Authorize)         
+     -Parameter with * are required to execute related API
+  version: v2.6.0
+  contact: {}
+tags: []
+servers:
+  - url: https://api.crawlora.com
+    description: The api gateway to communicate with servers
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+      name: Authorization
+      in: header
+    api-key:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    UserRegisterDto:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+        first_name:
+          type: string
+        last_name:
+          type: string
+        password:
+          type: string
+        country:
+          type: string
+        language:
+          type: string
+        timezone:
+          type: string
+      required:
+        - email
+        - first_name
+        - last_name
+        - password
+    UserCreatedResponse:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: object
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    ExceptionDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: object
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    UserLoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+        password:
+          type: string
+        country:
+          type: string
+        language:
+          type: string
+        timezone:
+          type: string
+      required:
+        - email
+        - password
+    LoginResDto:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    UserLoginResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/LoginResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    ForgetPasswordReqDto:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+        - email
+    ForgotPasswordResDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: object
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    UsersDataDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the user
+        created_at:
+          type: string
+          description: Timestamp when the user was created
+        email:
+          type: string
+          description: Email address of the user
+        first_name:
+          type: string
+          description: First name of the user
+        last_name:
+          type: string
+          description: Last name of the user
+        country:
+          type: string
+          description: Country of the user
+      required:
+        - id
+        - created_at
+        - email
+        - first_name
+        - last_name
+        - country
+    PluginResDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        code_path:
+          type: string
+        language:
+          type: string
+        comments:
+          type: string
+        description:
+          type: string
+        allowed_hostnames:
+          type: array
+          items:
+            type: string
+        test_data:
+          type: string
+        test_status:
+          type: string
+        test_error:
+          type: string
+        test_response:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - name
+        - status
+        - code_path
+        - language
+        - comments
+        - description
+        - allowed_hostnames
+        - test_data
+        - test_status
+        - test_error
+        - test_response
+        - created_at
+        - updated_at
+    PluginListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PluginResDTO'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    PluginResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/PluginResDTO'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    PluginReqDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the plugin
+        status:
+          type: string
+          enum:
+            - draft
+            - unpublished
+            - published
+          default: draft
+        language:
+          type: string
+          description: Language of your plugin default will be typescript
+          enum:
+            - typescript
+            - python
+            - java
+            - php
+            - go
+            - rust
+          default: typescript
+        comments:
+          type: string
+          description: Additional comments regarding your plugin
+        description:
+          type: string
+          description: Description for the plugin
+        should_test:
+          type: boolean
+          description: Flag for the testing the plugin
+          default: false
+        allowed_hostnames:
+          type: array
+          description: Hostnames for plugin
+          items:
+            type: string
+        file:
+          type: string
+          format: binary
+        test_data:
+          type: string
+          format: binary
+        test_url:
+          type: string
+          description: Test url for plugin
+        with_js:
+          type: boolean
+          description: Indicates whether to with JS in the plugin
+          default: true
+      required:
+        - name
+        - language
+        - test_url
+    PluginUpdateReqDto:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - draft
+            - unpublished
+            - published
+          default: draft
+        comments:
+          type: string
+          description: Additional comments regarding your plugin
+        should_test:
+          type: boolean
+          description: Flag for the testing the plugin
+          default: false
+        allowed_hostnames:
+          type: array
+          items:
+            type: string
+        file:
+          type: string
+          format: binary
+        test_data:
+          type: string
+          format: binary
+      required:
+        - should_test
+    APIKeyResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        values:
+          type: string
+        expiration:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - name
+        - values
+        - expiration
+        - created_at
+        - updated_at
+    APIKeyListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIKeyResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    APIKeyResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/APIKeyResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    APIKeyReqDto:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration:
+          format: date-time
+          type: string
+          description: If not set then this apikey work as non-expired api-key
+      required:
+        - name
+    APIKeyUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration:
+          format: date-time
+          type: string
+          description: If not set then this apikey work as non-expired api-key
+      required:
+        - name
+    CrawlerResDto:
+      type: object
+      properties:
+        status:
+          type: string
+        error:
+          type: string
+        response:
+          type: string
+      required:
+        - status
+        - error
+        - response
+    RequestResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        location:
+          type: string
+        language:
+          type: string
+        url:
+          type: string
+        plugin:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        response_type:
+          type: string
+        mode:
+          type: string
+        callback_url:
+          type: string
+        proxy_host:
+          type: string
+          nullable: true
+        proxy_protocol:
+          type: string
+          nullable: true
+        proxy_port:
+          type: number
+          nullable: true
+        proxy_username:
+          type: string
+          nullable: true
+        proxy_password:
+          type: string
+          nullable: true
+        callback_status:
+          type: string
+          nullable: true
+        callback:
+          type: string
+        crawler_data:
+          $ref: '#/components/schemas/CrawlerResDto'
+        plugin_data:
+          $ref: '#/components/schemas/CrawlerResDto'
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        status:
+          type: string
+          nullable: true
+          enum:
+            - in_progress
+            - failed
+            - success
+      required:
+        - id
+        - location
+        - language
+        - url
+        - plugin
+        - state
+        - response_type
+        - mode
+        - callback_url
+        - proxy_host
+        - proxy_protocol
+        - proxy_port
+        - proxy_username
+        - proxy_password
+        - callback_status
+        - callback
+        - crawler_data
+        - plugin_data
+        - created_at
+        - updated_at
+        - status
+    RequestListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    RequestResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/RequestResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    ProxyDto:
+      type: object
+      properties:
+        port:
+          type: number
+        host:
+          type: string
+        protocol:
+          type: string
+          enum:
+            - http
+            - https
+            - socks4
+            - socks5
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - port
+        - host
+        - protocol
+        - username
+        - password
+    RequestDto:
+      type: object
+      properties:
+        location:
+          type: string
+          default: US
+        language:
+          type: string
+          default: en
+        url:
+          type: string
+        plugin:
+          type: string
+        state:
+          type: string
+          description: >-
+            requester state with unique value to match the response with unique
+            id with will be returned to the callback without any change
+        responseType:
+          type: string
+          description: type of response that we need to give
+          enum:
+            - html
+            - plugin
+            - all
+          default: all
+        mode:
+          type: string
+          description: behavior of crawler
+          enum:
+            - with_js
+            - without_js
+          default: with_js
+        callbackUrl:
+          type: string
+          description: an post url https/http endpoint to submit response when completed
+        proxy:
+          description: proxy details to securely crawl the data if you want to use your own
+          allOf:
+            - $ref: '#/components/schemas/ProxyDto'
+      required:
+        - location
+        - language
+        - url
+        - responseType
+        - mode
+        - callbackUrl
+    AnalyticsResDto:
+      type: object
+      properties:
+        total_requests:
+          type: number
+        succeeded:
+          type: number
+        failed:
+          type: number
+        under_process:
+          type: number
+      required:
+        - total_requests
+        - succeeded
+        - failed
+        - under_process
+    AnalyticsResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/AnalyticsResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    FeedbackResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        subject:
+          type: string
+          description: A short title for feedback
+        description:
+          type: string
+          description: A detailed description for feedback
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - subject
+        - description
+        - created_at
+        - updated_at
+    FeedbackListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    FeedbackResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/FeedbackResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    FeedbackReqDto:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: A short title for feedback
+        description:
+          type: string
+          description: A detailed description for feedback
+      required:
+        - subject
+        - description
+    FeedbackUpdateReqDto:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: A short title for feedback
+        description:
+          type: string
+          description: A detailed description for feedback
+    ProviderResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        imageIcon:
+          type: string
+      required:
+        - name
+        - imageIcon
+    ProviderList:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderResponse'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    TransactionResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        used_seconds:
+          type: number
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+      required:
+        - id
+        - user_id
+        - used_seconds
+        - created_at
+        - updated_at
+        - deleted_at
+    TransactionsResponseDtoList:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    AppListResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        icon:
+          type: string
+        banner:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - author
+        - icon
+        - banner
+    AppListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppListResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    ResponseInputTypes:
+      type: object
+      properties:
+        type:
+          type: string
+        datatype:
+          type: string
+        label:
+          type: string
+        regex:
+          type: string
+        default:
+          type: string
+        required:
+          type: boolean
+        placeholder:
+          type: string
+        name:
+          type: string
+      required:
+        - type
+        - datatype
+        - label
+        - regex
+        - default
+        - required
+        - placeholder
+        - name
+    AppResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        icon:
+          type: string
+        banner:
+          type: string
+        version:
+          type: string
+        input:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseInputTypes'
+        screenshots:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - author
+        - icon
+        - banner
+        - version
+        - input
+        - screenshots
+        - created_at
+        - updated_at
+    AppResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/AppResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    InputTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - input
+            - checkbox
+            - radio
+            - select
+          default: input
+        datatype:
+          default: string
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: array
+            - type: object
+        placeholder:
+          type: string
+        default:
+          oneOf:
+            - type: string
+            - type: number
+          default: string
+        label:
+          type: string
+        regex:
+          type: string
+          format: regex
+        required:
+          type: boolean
+        name:
+          type: string
+      required:
+        - type
+        - datatype
+        - placeholder
+        - default
+        - label
+        - regex
+        - required
+        - name
+    CreateAppRequestDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: title of the app
+        description:
+          type: string
+          description: description of the app
+        file:
+          type: string
+          format: binary
+        icon:
+          type: string
+          format: binary
+          description: icon of the app
+        banner:
+          type: string
+          format: binary
+          description: banner of the app
+        author:
+          type: string
+          description: Author of the app
+        version:
+          type: string
+          description: Version of the app
+        input:
+          items:
+            $ref: '#/components/schemas/InputTypes'
+          description: Array of input types for the app
+          type: array
+        screenshots:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Array of screenshots for the app
+      required:
+        - title
+        - description
+        - file
+        - icon
+        - banner
+        - author
+        - version
+        - input
+        - screenshots
+    UpdateAppRequestDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the app
+        description:
+          type: string
+          description: Description of the app
+        file:
+          type: string
+          format: binary
+        icon:
+          type: string
+          format: binary
+          description: icon of the app
+        banner:
+          type: string
+          format: binary
+          description: banner of the app
+        author:
+          type: string
+          description: Author of the app
+        version:
+          type: string
+          description: Version of the app
+        input:
+          description: Input types for the app
+          type: array
+          items:
+            $ref: '#/components/schemas/InputTypes'
+        screenshots:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Array of screenshots for the app
+    SequenceResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        app:
+          $ref: '#/components/schemas/AppResDto'
+        version:
+          type: string
+        input:
+          type: object
+        status:
+          type: string
+          nullable: true
+          enum:
+            - in_progress
+            - failed
+            - success
+        created_at:
+          type: string
+      required:
+        - id
+        - app
+        - version
+        - input
+        - status
+        - created_at
+    SequenceListResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SequenceResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    SequenceResponseDto:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/SequenceResDto'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    CreateSequenceDto:
+      type: object
+      properties:
+        app_id:
+          type: string
+        version:
+          type: string
+        input:
+          type: object
+      required:
+        - app_id
+        - version
+        - input
+    UpdateSequenceDto:
+      type: object
+      properties:
+        version:
+          type: string
+        input:
+          type: object
+        status:
+          type: string
+    SequenceOutputReqDTO:
+      type: object
+      properties:
+        sequence_id:
+          type: string
+        sequence_output:
+          type: object
+      required:
+        - sequence_id
+        - sequence_output
+    SequenceOutputResDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        sequence_id:
+          type: string
+        sequence_output:
+          type: object
+        created_at:
+          type: string
+      required:
+        - id
+        - sequence_id
+        - sequence_output
+        - created_at
+    SequenceOutputResponseDTO:
+      type: object
+      properties:
+        is_error:
+          type: boolean
+        message:
+          type: string
+        correlator_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/SequenceOutputResDTO'
+      required:
+        - is_error
+        - message
+        - correlator_id
+        - data
+    ProfileResDto:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+    NameUpdateReqDto:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+        - first_name
+        - last_name
+    EmailUpdateReqDto:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+        otp:
+          type: string
+      required:
+        - email
+        - otp
+    PasswordUpdateReqDto:
+      type: object
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+        otp:
+          type: string
+      required:
+        - old_password
+        - new_password
+        - otp
+    GRecapthcaVerify:
+      type: object
+      properties: {}
